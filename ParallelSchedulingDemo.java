@@ -15,7 +15,7 @@ import java.util.Collections;
 import javax.swing.JFileChooser; //native java's file selector
 import javax.swing.filechooser.FileNameExtensionFilter; //needed to restrict file selection to .txt only 
 
-public class project1spr2019 {
+public class ParallelSchedulingDemo {
 
 	public static void adaptiveFCFS(cpuCore coreList[], cpuProc procList[], int size, int sleepVal) throws InterruptedException {
 
@@ -401,29 +401,9 @@ public class project1spr2019 {
 		coreList = new cpuCore[4];
 		procList = readFile(procList, "test1.txt"); //reads from file and updates the array accordingly
 		size = procList.length;//Receives # of processes
-		
 		multiCoreLPT(coreList, procList, size, sleepVal);
+		adaptiveFCFS(coreList, procList, size, sleepVal);
 
-		
-		/* StringBuilder menu = new StringBuilder("Which algorithm would you like to use?\n");
-		menu.append("  1. LPT\n");
-		menu.append("  2. Adaptive First Come First Serve\n");
-		menu.append("Enter a digit: ");
-		System.out.print(menu.toString());
-		int scheduler = read.nextInt();
-		switch(scheduler) {
-			case 1:
-				multiCoreLPT(coreList, procList, size, sleepVal);
-				break;
-			case 2:
-				adaptiveFCFS(coreList, procList, size, sleepVal);
-				break;
-			default:
-				break;
-		} */
-		
-		
-		
 		read.close();
 	}
 
