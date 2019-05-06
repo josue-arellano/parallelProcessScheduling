@@ -383,7 +383,7 @@ public class project1spr2019 {
 		Scanner read = new Scanner(System.in);
 		
 		System.out.println("Multicore CPU Scheduling Simulator.");
-		System.out.print("Press Enter to begin with sparse data with few long processes on a four cores");
+		System.out.print("Press Enter to begin with sparse data with few long processes on a one core");
 		read.nextLine();
 		
 		procList = readFile(procList, "test1.txt"); //reads from file and updates the array accordingly
