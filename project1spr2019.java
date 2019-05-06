@@ -321,9 +321,9 @@ public class project1spr2019 {
 	}
 	
 	@SuppressWarnings("resource")
-	public static cpuProc[] readFile(cpuProc[] procList) throws IOException
+	public static cpuProc[] readFile(cpuProc[] procList, String path) throws IOException
 	{	
-		String PathToInput = promptForFile(); //this function creates swing's window for file selection
+		String PathToInput = path; //this function creates swing's window for file selection
 		File intxt = new File(PathToInput); //collect the path of a selected file
 		//File intxt = new File("input.txt");
 				
@@ -380,53 +380,49 @@ public class project1spr2019 {
 		cpuProc[] procList = new cpuProc[0]; //create array of process objects
 		cpuCore[] coreList = new cpuCore[2]; // 4 core processor;
 		
-		for(int i = 0; i<2;i++)
-		{
-			coreList[i] = new cpuCore(i);
-		}
-	
-		
 		Scanner read = new Scanner(System.in);
 		
 		System.out.println("Multicore CPU Scheduling Simulator.");
-		char menuSel;
+		System.out.print("Press Enter to begin with sparse data with few long processes on a four cores");
+		read.nextLine();
 		
-		do
-		{
-			System.out.print("Press Enter to initiate input.txt file selection menu.");
-			System.in.read();
-			
-			procList = readFile(procList); //reads from file and updates the array accordingly
-			int size = procList.length;//Receives # of processes
-			
-			System.out.print("Please specify the number of cores: ");
-			int cores = read.nextInt();
-			
-			coreList = new cpuCore[cores];					
-			// sleepVal for you to change;
-			int sleepVal = 250;
+		procList = readFile(procList, "test1.txt"); //reads from file and updates the array accordingly
+		int size = procList.length;//Receives # of processes
+		
+		coreList = new cpuCore[1];					
+		// sleepVal for you to change;
+		int sleepVal = 200;
+		
+		multiCoreLPT(coreList, procList, size, sleepVal);
 
-			StringBuilder menu = new StringBuilder("Which algorithm would you like to use?\n");
-			menu.append("  1. LPT\n");
-			menu.append("  2. Adaptive First Come First Serve\n");
-			menu.append("Enter a digit: ");
-			System.out.print(menu.toString());
-			int scheduler = read.nextInt();
-			switch(scheduler) {
-				case 1:
-					multiCoreLPT(coreList, procList, size, sleepVal);
-					break;
-				case 2:
-					adaptiveFCFS(coreList, procList, size, sleepVal);
-					break;
-				default:
-					break;
-			}
-			
-			System.out.println("Do you wish to repeat the program?");
-			menuSel = read.next().charAt(0);
+		System.out.print("Press Enter to begin with sparse data with few long processes on a four cores");
+		read.nextLine();
 		
-		} while (menuSel == 'y' || menuSel == 'Y');
+		coreList = new cpuCore[4];
+		procList = readFile(procList, "test1.txt"); //reads from file and updates the array accordingly
+		size = procList.length;//Receives # of processes
+		
+		multiCoreLPT(coreList, procList, size, sleepVal);
+
+		
+		/* StringBuilder menu = new StringBuilder("Which algorithm would you like to use?\n");
+		menu.append("  1. LPT\n");
+		menu.append("  2. Adaptive First Come First Serve\n");
+		menu.append("Enter a digit: ");
+		System.out.print(menu.toString());
+		int scheduler = read.nextInt();
+		switch(scheduler) {
+			case 1:
+				multiCoreLPT(coreList, procList, size, sleepVal);
+				break;
+			case 2:
+				adaptiveFCFS(coreList, procList, size, sleepVal);
+				break;
+			default:
+				break;
+		} */
+		
+		
 		
 		read.close();
 	}
