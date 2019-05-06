@@ -156,88 +156,103 @@ public class project1spr2019 {
 		} // end of while(procNum>0)
 	}
 
-	public static void multiCoreLPT(cpuCore coreList[], cpuProc procList[], int size, int sleepVal) throws InterruptedException
+	public static void multiCoreLPT(cpuCore coreList[], cpuProc procList[], int size, int sleepVal) 
+			throws InterruptedException
 	{
 		for(int i = 0; i<size;i++){
-			procList[i].setCompType('f'); }
-		//selecting the comp type for all object will set their comparator to compare their arrival time		
-		Arrays.sort(procList);//thanks to choosing appropriate comparator the array will be sorted by arrival time
+			procList[i].setCompType('f'); } 
+				
+		Arrays.sort(procList);//Processes are sorted according to their 
+                                //arrival time
+                
 		for(int i = 0; i<size;i++) {
 			procList[i].setCompType('x'); }
-		//selecting the comp type for all object will set their comparator to compare their burst time 
+		//Comparator type changed to returning comparison of bursts
+              
 		
 		Queue<cpuProc> PriorityQueue = new PriorityQueue<cpuProc>(); 
-		// Last in First Out. New elements go to the end. Removes elements from the front
+		//Queue automatically arranges items according to the 
+                    //comparator results
 		
 		//check how many Cores are available
 		int numOfCores = coreList.length; 
 		
 		
-		
 		int procNum = size; //number of processes
 		int trnArnd = 0; // used for calculating the turnaround time
 		int execTime = 0; // used for calculating process time
-		for(int h=0;h<size;h++) {
-			execTime = execTime+procList[h].getBurst_time();
-		}
 		
-		int cpu_burst = 0; 
+		int cpu_burst = 0; //
 		int idle_time = 0;
 		int i = 0;
 	
-		cpuProc curr_Proc[] = new cpuProc[numOfCores]; //initialize
-		
+		cpuProc curr_Proc[] = new cpuProc[numOfCores]; 
+                //we have a hard processor affinity policy
+                // each one of those objects will store a process
+                // to be executed by their respective core assigned
+                // by a scheduler
+                
 		StringBuilder header = new StringBuilder("TIME\t");
 		StringBuilder line = new StringBuilder("--------");
-		for(int j = 0; j < coreList.length; j++) {
+		
+                for(int j = 0; j < coreList.length; j++) {
 			int cpuNum = j + 1;
 			header.append("CPU" + cpuNum + "\t");
 			line.append("--------");
 		}
 		header.append("\n" + line.toString());
 		System.out.println(header);
-		while(procNum >0) {
+		
+                //This while loop wiill continue untill all processes
+                //are completed
+        while(procNum >0) { 
+        	
 			TimeUnit.MILLISECONDS.sleep(sleepVal);
+			
 			StringBuilder processOutput = new StringBuilder();
 			processOutput.append((cpu_burst)+"\t");
 			StringBuilder processQueueOutput = new StringBuilder("");
+			
 			int now = i;
 			boolean processArrived = false;
+			
 			while(i<size && procList[i].getArrival_time() == cpu_burst) {
 				if(i == now) {
-					processQueueOutput.append("[ Arrived: P"+procList[i].getPid());
+					processQueueOutput.append("[ Arrived: P"
+                                                +procList[i].getPid());
 					processArrived = true;
 				}
-				else processOutput.append(", P" + procList[i].getPid());
+				else processOutput.append(", P" + 
+                                        procList[i].getPid());
 				PriorityQueue.add(procList[i]);
+				execTime = execTime+procList[i].getBurst_time();
 				i++;
 			}
 			
 			if(processArrived) processQueueOutput.append(" ]");
 			
-			//you have processes in your queue.
-			//sorted by size (biggest first).
-			// now pull them out and assign them to eachs core current process holder curr_Proc
-			
-			//if PriorityQueue.isEmpty() != false wtedy dodawaj
 			
 			for(int x = 0; x<numOfCores; x++)
 			{
 				int burst;
 				
-				
 				if(curr_Proc[x] == null)
-				{	//if no process is currently executed by a core
-					//poll a new one from a queue and execute it
-					//if still null that means cpu can go to idle state
-					
+				{	
+                                    //if core X is not executing any processes
+                                    //poll one for them queue
 					curr_Proc[x] = PriorityQueue.poll();
-					if(curr_Proc[x] == null) //polling from an empty queue gives null
-					{//getting null means no processes are currently available for execution.
-					// inform a core is not doing anything.
+					
+                                        //if the current process of core X is
+                                        //still null, that means we tried
+                                        //polling from an empty queue
+                                        //that means this core can sit idling
+                                        //at this specific cpu burst
+                                        if(curr_Proc[x] == null) 
+					{
 						processOutput.append("IDLE\t");	
-					}
-					else
+                                                idle_time++;
+                                        }
+                                        else //A new process is ready to be executed by core X
 					{
 						burst = curr_Proc[x].getBurst_time();
 						processOutput.append(curr_Proc[x].getTid());
@@ -245,7 +260,7 @@ public class project1spr2019 {
 						curr_Proc[x].setBurst_time(burst-1);
 					}
 				}
-				else // A current process is already assigned to a core
+				else //if core X already had a process assigned to it.
 				{
 					burst = curr_Proc[x].getBurst_time(); //check its progress
 					
@@ -269,18 +284,6 @@ public class project1spr2019 {
 					}			
 				}
 				
-				 //this will fill all the current process holders for each core.
-				
-				//make it display in a singe line?? 
-				// ex.
-				// cpu0		|cpu1		|cpu2		|cpu3
-				// p1: 10	p2:5		p3:5		IDLE
-				// p1:	9	p2:4		p3:4		p4: 2
-				
-				//etc etc
-			
-				//akszuli moze poprostu zrob zero i na koncu if jezeli jakis process jest zero to go wypierdol i daj wiadomosc.
-				// lepiej tak niz pare razy ta sama wiadomosc pisac tbh.
 			}
 			if(size == 0) System.out.println(processOutput);
 			else System.out.println(processOutput + " " + processQueueOutput);
@@ -298,9 +301,6 @@ public class project1spr2019 {
 				+"Average turnaround time: "+att+"\n"
 				+"Average process time: "+apt
 				+"\nCPU utilization: "+cpu_util);
-		
-		
-		
 	}
 	
 	public static String promptForFile()
